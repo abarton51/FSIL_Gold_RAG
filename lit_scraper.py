@@ -29,7 +29,7 @@ def check_and_close_popup(driver):
         pass
 
 
-download_directory = "/Users/shivanshsharma/Documents/Scraped_pdfs"
+download_directory = "data/sec_complaints"
 
 chrome_options = Options()
 # chrome_options.add_argument("--headless")
@@ -40,7 +40,7 @@ chrome_options.add_experimental_option("prefs", {
     "plugins.always_open_pdf_externally": True  
 })
 
-chrome_driver_path = "/usr/local/bin/chromedriver"
+chrome_driver_path = "./chromedriver/chromedriver.exe"
 service = Service(chrome_driver_path)
 driver = webdriver.Chrome(service=service, options=chrome_options) #new
 
