@@ -1,17 +1,7 @@
-# FSIL_Gold_RAG (FRALM)
+# RegRecall
 
-FRALM, (Financial Retrieval-Augmented Language Models) is a project to test the efficacy of Retrieval-Augmented Language Models (RALMS) as a possible substitute for supervised fine-tuning approaches in pursuit of the construction of a finance domain language model. 
+RegRecall is a new natural language evaluation task that aims to test the efficacy of language models to identify violated SEC regulations given a textual description of actions taken. The dataset is compiled from SEC records of initiated federal civil court cases against parties accused of actions such as stock manipulation, insider trading, etc. 
 
-Our project proposal, which can give a more detailed overview of our objectives, can be found [here](https://drive.google.com/file/d/14DgoEsQXqudRCquihNhUoUzRDLaKNamA/view?usp=sharing).
+We aim to develop the task to align with the legal LLM evaluation framework outlined in the [LegalBench paper](https://arxiv.org/abs/2308.11462), which is based on the [IRAC](https://en.wikipedia.org/wiki/IRAC) legal reasoning framework. In this context, RegRecall is an example of a Rule-Recall task, which involves identifying relevant regulations or laws given a description of actions taken.
 
-### Models
-
-In pursuit of our goal, we plan to implement the following LLama2-base RALM models. 
-
-- Llama2-7B with Naive RAG
-- Llama2-7B with RA-DIT
-- Llama2-7B with Self-RAG
-
-### Benchmarks
-
-We will evaluate our models over the FLARE financial NLP benchmark presented in the [PIXIU paper](https://arxiv.org/abs/2306.05443). We may further limit our testing to specific benchmark tasks in the future, as we further refine the desired capabilities of our Financial RALM. 
+Our full project proposal can be found [here](https://drive.google.com/file/d/1WBsrhjssaqYb7ydoN5JN5UlA5r5vo6vs/view?usp=drive_link).
