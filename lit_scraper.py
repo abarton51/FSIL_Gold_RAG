@@ -28,63 +28,68 @@ def check_and_close_popup(driver):
     except NoSuchElementException:
         pass
 
+def scrape_sec_complaints():
 
-download_directory = "/Users/shivanshsharma/Documents/Scraped_pdfs"
+    download_directory = "data/sec_complaints"
 
-chrome_options = Options()
-# chrome_options.add_argument("--headless")
-chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": download_directory,
-    "download.prompt_for_download": False,
-    "download.directory_upgrade": True,
-    "plugins.always_open_pdf_externally": True  
-})
+    chrome_options = Options()
+    # chrome_options.add_argument("--headless")
+    chrome_options.add_experimental_option("prefs", {
+        "download.default_directory": download_directory,
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "plugins.always_open_pdf_externally": True  
+    })
 
-chrome_driver_path = "/usr/local/bin/chromedriver"
-service = Service(chrome_driver_path)
-driver = webdriver.Chrome(service=service, options=chrome_options) #new
+    chrome_driver_path = "./chromedriver/chromedriver.exe"
+    service = Service(chrome_driver_path)
+    driver = webdriver.Chrome(service=service, options=chrome_options) #new
 
-downloaded_files = []
-total_size = 0 #new 
-runs = 0
-downloads = 0
-try:
-    driver.get("https://www.sec.gov/litigation/litreleases")
-    while True:
-        # driver.get("https://www.sec.gov/litigation/litreleases")
-        check_and_close_popup(driver)
-        complaint_links = driver.find_elements(By.PARTIAL_LINK_TEXT, 'SEC Complaint')
-        
-        for link in complaint_links:
-            complaint_url = link.get_attribute('href')
+    downloaded_files = []
+    total_size = 0 #new 
+    runs = 0
+    downloads = 0
+    try:
+        driver.get("https://www.sec.gov/litigation/litreleases")
+        while True:
+            # driver.get("https://www.sec.gov/litigation/litreleases")
+            check_and_close_popup(driver)
+            complaint_links = driver.find_elements(By.PARTIAL_LINK_TEXT, 'SEC Complaint')
             
-            if complaint_url.endswith('.pdf'):
-                driver.get(complaint_url)
-                file_name = complaint_url.split('/')[-1]
-                downloaded_files.append(file_name)
-                downloads+=1
+            for link in complaint_links:
+                complaint_url = link.get_attribute('href')
+                
+                if complaint_url.endswith('.pdf'):
+                    driver.get(complaint_url)
+                    file_name = complaint_url.split('/')[-1]
+                    downloaded_files.append(file_name)
+                    downloads+=1
+                else:
+                    print(f"Skipped non-PDF link: {complaint_url}")
+
+            wait_for_downloads(download_directory)
+            
+            # Update total_size after each page of downloads
+            total_size += sum(os.path.getsize(os.path.join(download_directory, f))
+                            for f in downloaded_files
+                            if os.path.exists(os.path.join(download_directory, f)))
+
+            # next page using next button
+            next_button = driver.find_elements(By.CSS_SELECTOR, 'a[rel="next"]')
+            if next_button:
+                next_button[0].click()
+                time.sleep(2)
             else:
-                print(f"Skipped non-PDF link: {complaint_url}")
+                break  
 
-        wait_for_downloads(download_directory)
-        
-        # Update total_size after each page of downloads
-        total_size += sum(os.path.getsize(os.path.join(download_directory, f))
-                          for f in downloaded_files
-                          if os.path.exists(os.path.join(download_directory, f)))
+    finally:
+        # driver.quit()
+        print("Stopped")
 
-        # next page using next button
-        next_button = driver.find_elements(By.CSS_SELECTOR, 'a[rel="next"]')
-        if next_button:
-            next_button[0].click()
-            time.sleep(2)
-        else:
-            break  
+    # Output the results
+    print(f"Total size of downloaded PDFs: {total_size} bytes")
+    print(f"Total number of downloaded files: {downloads}")
 
-finally:
-    # driver.quit()
-    print("Stopped")
+if __name__ == "__main__":
 
-# Output the results
-print(f"Total size of downloaded PDFs: {total_size} bytes")
-print(f"Total number of downloaded files: {downloads}")
+    scrape_sec_complaints()
