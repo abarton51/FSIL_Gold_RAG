@@ -18,8 +18,10 @@ def construct_sec_text_dataset(dir_filepath: str, json_output_filepath: str):
 
     with open(json_output_filepath, "w") as json_file:
 
-        json.dump(directory_texts, json_file)
+        for item in directory_texts:
+            json.dump(item, json_file)
+            json_file.write('\n')
 
 if __name__ == "__main__":
 
-    construct_sec_text_dataset("data/sec_complaints_text", "data/sec_complaint_texts.json")
+    construct_sec_text_dataset("data/sec_complaints_text", "data/sec_complaint_texts.jsonl")
